@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link rel="stylesheet" href="restaurant-management-system.css">
+      <title> Mgmt. System | Cara's Food Haven </title>
+      <link rel="shortcut icon" type="x-icon" href="../RestaurantLogo-Cut.png">
+  </head>
+
+  <body>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    
+    <nav>
+      <div id="nav-header">CARA'S FOOD HAVEN: MANAGEMENT SYSTEM</div>
+      <ul>
+        <li class="account-dropdown">
+          <div class="account-info">
+            <img id="account_img" src="manager-pic-cut.png" alt="Avatar">
+            <div>
+              <span class="account-name">Kirby Adrian P. Saligan</span>
+              <span class="account-role">Manager</span>
+            </div>
+            <i class="fas fa-caret-down" id="dropdown-arrow"></i>
+          </div>
+          <div class="dropdown-content">
+            <a href="#" id="toggle-mode">
+              <i class="fas fa-sun" id="mode-icon"></i> Toggle Light Mode
+            </a>
+            <a href="#">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="verticalmenu_container">
+      <br>
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">RESTAURANT<BR>MANAGEMENT</label>
+        <button class="verticalmenu-btn" id="orderManagementPage">
+          <i class="fas fa-receipt"></i> Order Management
+        </button>
+        <button class="verticalmenu-btn" id="analyticsPage">
+          <i class="fas fa-chart-line"></i> Analytics
+        </button>
+        <button class="verticalmenu-btn" id="stockPage">
+          <i class="fas fa-boxes"></i> Stock
+          <span class="notification-badge" style="display: none;">0</span>
+        </button>
+        <button class="verticalmenu-btn" id="stockTransactionPage">
+          <i class="fas fa-exchange-alt"></i> Stock Transaction
+        </button>
+        <button class="verticalmenu-btn" id="staffPage">
+          <i class="fas fa-user-tie"></i> Staff
+        </button>
+        <button class="verticalmenu-btn" id="customerPage">
+          <i class="fas fa-users"></i> Customer
+        </button>
+      </div>
+      <br>
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">MENU ITEM</label>
+        <button class="verticalmenu-btn" id="menuItemPage">
+          <i class="fas fa-utensils"></i> Menu Item List
+        </button>
+        <button class="verticalmenu-btn" id="menuCategoryPage">
+          <i class="fas fa-tags"></i> Menu Category
+        </button>
+      </div>
+      <br>
+      <div class="verticalmenu-section">
+        <label class="verticalmenu-label">INGREDIENT</label>
+        <button class="verticalmenu-btn" id="ingredientPage">
+          <i class="fas fa-carrot"></i> Ingredient List
+          <span class="notification-badge" style="display: none;">0</span>
+        </button>
+        <button class="verticalmenu-btn" id="ingredientCategoryPage">
+          <i class="fas fa-list"></i> Ingredient Category
+        </button>
+        <button class="verticalmenu-btn" id="ingredientUnitPage">
+          <i class="fas fa-balance-scale"></i> Ingredient Unit
+        </button>
+      </div>
+    </div>
+        
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div id="stock-in-n-out-modal" class="modal">
+      <div id="stock-in-n-out-modal-content" class="modal-content">
+
+          <span class="close-button" onclick="closeModal('stock-in-n-out-modal')">X</span>
+
+          <br>
+
+          <h2 id="stock-in-n-out-header">INGREDIENTS TO STOCK IN</h2>
+          
+          <div id="stock-in-n-out-table-container" class="table-container">
+            <table id="stock-in-n-out-table">
+                <thead>
+                    <tr>
+                      <th class="id-columns">STOCK ID</th>
+                      <th>[ID] INGREDIENT</th>
+                      <th id="stock-in-n-out-column-head">QUANTITY<br>ADDED</th>
+                      <th>EXPIRATION DATE</th>
+                      <th>DAYS UNTIL<br>EXP-DATE ALERT</th>
+                      <th>REMARKS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+          </div>
+
+          <button type="button" id="confirmed-ings-to-stock-btn" onclick="confirmedIngsToStock(this)">Confirm Stock In</button>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="orderManagement">
+      <div class="container-full">
+        
+        <!-- ============================== -->
+
+        <div class="filter-bar">
+          <button class="filter-btn" data-status="ALL">
+            <i class="fas fa-list"></i> All<span class="count" id="count-ALL"></span>
+          </button>
+          <button class="filter-btn" data-status="PENDING">
+            <i class="fas fa-hourglass-start"></i> Pending<span class="count" id="count-PENDING"></span>
+          </button>
+          <button class="filter-btn" data-status="PREPARING">
+            <i class="fas fa-fire"></i>  Preparing<span class="count" id="count-PREPARING"></span>
+          </button>
+          <button class="filter-btn" data-status="READY FOR PICKUP">
+            <i class="fas fa-concierge-bell"></i> Ready for Pickup<span class="count" id="count-READY FOR PICKUP"></span>
+          </button>
+          <button class="filter-btn" data-status="COMPLETE">
+            <i class="fas fa-check-circle"></i> Complete<span class="count" id="count-COMPLETE"></span>
+          </button>
+          <button class="filter-btn" data-status="CANCELED">
+            <i class="fas fa-times-circle"></i> Canceled<span class="count" id="count-CANCELED"></span>
+          </button>
+          <!-- Date Display -->
+          <div id="current-date-time" class="current-date-time"></div>
+        </div>
+
+        <!-- ============================== -->
+    
+        <div class="orders">
+          
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+    </div>   
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div id="cancel-order-modal" class="modal">
+      <div id="cancel-order-modal-content" class="modal-content">
+  
+        <h2>Cancel Order?</h2>
+        <br>
+        <p>This action cannot be undone.</p>
+        <br>
+        <div class="action-buttons">
+          <div class="right-buttons"></div>
+            <button id="closeModal" class="action-btn">No, Go Back</button>
+            <button id="confirmCancel" class="action-btn">Yes, Cancel</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="order-management.js"></script>
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="analytics">
+      <div class="container-full">
+        
+        <!-- ============================== -->
+
+        <div class="analytics-card-info">
+        
+          <!-- ============================== -->
+          
+          <!-- New Chart for Total Paid Orders -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-dollar-sign"></i>
+              TOTAL PAID ORDERS
+              <i class="fas fa-dollar-sign"></i>
+            </h2>
+            <br>
+            <label for="totalPaidOrders-yearSelect">Select Year:</label>
+            <select id="totalPaidOrders-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="ordersChart"></canvas>
+          </div>
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Sales by Order Type -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-chart-pie"></i>
+              SALES BY ORDER TYPE
+              <i class="fas fa-chart-pie"></i>
+            </h2>
+            <br>
+            <select id="salesOrderType-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="salesOrderType-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="orderTypeChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Menu Item Orders -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-utensils"></i>
+              MENU ITEM ORDERS
+              <i class="fas fa-utensils"></i>
+            </h2>
+            <br>
+            <select id="menuItemsOrdered-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="menuItemsOrdered-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <select id="menuItemsOrdered-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="menuItemOrdersChart"></canvas>
+          </div>          
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Menu Item Profit Margin -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-chart-line"></i>
+              MENU ITEM PROFIT MARGIN
+              <i class="fas fa-chart-line"></i>
+            </h2>
+            <br>
+            <select id="profitMargin-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="profitMargin-categorySelect">
+              <option value="category1">Menu Category #1</option>
+              <option value="category2">Menu Category #2</option>
+              <option value="category3">Menu Category #3</option>
+            </select>
+            <select id="profitMargin-itemSelect">
+              <!-- Options will be populated dynamically -->
+            </select>
+            <br>
+            <br>
+            <canvas id="profitMarginChart"></canvas>
+          </div>          
+        
+          <!-- ============================== -->
+
+          <!-- New Chart for Staff Orders -->
+          <div class="analytics-card">
+            <h2>
+                <i class="fas fa-user-tie"></i>
+                STAFF ORDERS ACCEPTED
+                <i class="fas fa-user-tie"></i>
+            </h2>
+            <br>
+            <label for="staffOrders-yearSelect">Select Year:</label>
+            <select id="staffOrders-yearSelect">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="staffOrdersChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Ingredient Usage Trends -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-carrot"></i>
+              INGREDIENT USAGE TRENDS
+              <i class="fas fa-carrot"></i>
+            </h2>
+            <br>
+            <select id="ingredientUsage-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="ingredientUsage-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="ingredientUsageChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Peak Hours and Days -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-clock"></i>
+              PEAK HOURS AND DAYS
+              <i class="fas fa-clock"></i>
+            </h2>
+            <br>
+            <label for="peakHours-daySelect">Select Day:</label>
+            <select id="peakHours-daySelect">
+              <option value="Sunday">Sunday</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+            <br>
+            <br>
+            <canvas id="peakHoursChart"></canvas>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Order Status Times -->
+          <div class="analytics-card">
+            <h2>
+              <i class="fas fa-clock"></i>
+              AVERAGE ORDER STATUS TIMES
+              <i class="fas fa-clock"></i>
+            </h2>
+            <br>
+            <label for="timeFormat">Time Format:</label>
+            <p id="timeFormat" style="margin: 5px;">MM:SS (Minutes:Seconds)</p>
+            <br>
+            <select id="orderStatus-yearSelect">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+            </select>
+            <select id="orderStatus-monthSelect">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <br>
+            <br>
+            <br>
+            <div class="status-chart">
+              <div class="order-status-avg-time-label" style="background-color: orange;">
+                <i class="fas fa-hourglass-start"></i> <!-- Icon for Pending -->
+                <span>Pending</span>
+              </div>
+              <div class="arrow">
+                <span id="pendingToPreparing"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="order-status-avg-time-label" style="background-color: orangered;">
+                <i class="fas fa-fire"></i> <!-- Icon for Preparing -->
+                <span>Preparing</span>
+              </div>
+              <div class="arrow">
+                <span id="preparingToReady"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="order-status-avg-time-label" style="background-color: blue;">
+                <i class="fas fa-concierge-bell"></i> <!-- Icon for Ready For Pickup -->
+                <br>
+                <span class="single-line">Ready For Pickup</span>
+              </div>
+              <div class="arrow">
+                <span id="readyToComplete"></span> <!-- Average time will be displayed here -->
+              </div>
+              <div class="order-status-avg-time-label" style="background-color: green;">
+                <i class="fas fa-check-circle"></i> <!-- Icon for Complete -->
+                <span>Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+          <!-- New Chart for Popular Menu Pairings (Heat Map) -->
+          <div class="analytics-card">
+            <h2>
+                <i class="fas fa-network-wired"></i>
+                POPULAR MENU PAIRINGS HEATMAP
+                <i class="fas fa-network-wired"></i>
+            </h2>
+            <br>
+            <br>
+            <div class="heatmap-container">
+              <label>COLOR LEGEND</label>
+              <div class="heatmap-legend">
+                <span id="min-value">?</span> <!-- Minimum value span -->
+                <div id="legend-gradient"></div>
+                <span id="max-value">?</span> <!-- Maximum value span -->
+              </div>
+              <br>
+              <br>
+              <p>Each cell shows the frequency of two menu items being ordered together. Higher values indicate more common pairings.</p>
+              <br>
+              <br>
+              <div id="menu-pairings-heatmap"></div> <!-- Container for the heatmap -->
+            </div>
+          </div>
+
+          <!-- ============================== -->
+
+        </div>
+        
+        <!-- ============================== -->
+
+      </div>
+    </div>   
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="analytics-graphs.js"></script>
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="stock">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('stock-id', 'stock-table', 'stock', 'stock-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('stock-table','stock-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Stock ID</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Quantity Left</option>
+              <option value="">Stock In Date</option>
+              <option value="">Expiration Date</option>
+            </select>
+            <button id="stock-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',true)">Stock In</button>
+            <button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('stock-table_body',false)">Stock Out</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>STOCK TABLE</h1>
+
+        <div class="table-container">
+          <table id="stock-table">
+            <thead>
+              <tr>
+                <th class="id-columns"></th>
+                <th class="id-columns">ID</th>
+                <th>[ID] INGREDIENT</th>
+                <th>QTY LEFT</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="stock-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STOCK FORM<br>(VIEW ONLY)</h2>
+        
+        <div class="details-display-container">
+
+          <form id="stock-form">
+  
+            <label for="stock-id">Stock ID:</label>
+            <input type="number" id="stock-id" name="stock-id" min="1" disabled>
+            
+            <br>
+  
+            <label for="stock-ingredient-id">Ingredient ID, Name, and Unit:</label>
+            <input type="text" id="stock-ingredient-id" name="stock-ingredient-id" min="1" disabled>
+            
+            <br>
+  
+            <label for="stock-status">Stock Status:</label>
+            <select id="stock-status">
+              <option>--- Click to View Different Status ---</option>
+              <option value="AVAILABLE">AVAILABLE</option>
+              <option value="NEAR EXPIRATION">NEAR EXPIRATION</option>
+              <option value="EXPIRED">EXPIRED</option>
+              <option value="SPOILED">SPOILED</option>
+              <option value="RESERVED">RESERVED</option>
+            </select>
+  
+            <br>
+  
+            <label for="stock-original-qty">Original Quantity:</label>
+            <input type="number" id="stock-original-qty" name="stock-original-qty" disabled>
+  
+            <br>
+  
+            <label for="stock-qty-left">Quantity Remaining:</label>
+            <input type="number" id="stock-qty-left" name="stock-qty-left" disabled>
+  
+            <br>
+  
+            <label for="stock-in-date">Stock In Date:</label>
+            <input type="date" id="stock-in-date" name="stock-in-date" disabled>
+  
+            <br>
+  
+            <label for="stock-expiration-date">Expiration Date:</label>
+            <input type="date" id="stock-expiration-date" name="stock-expiration-date" disabled>
+  
+            <br>
+  
+            <label for="stock-expiration-alert-threshold">Expiration Alert Threshold:</label>
+            <input type="number" id="stock-expiration-alert-threshold" name="stock-expiration-alert-threshold" disabled>
+  
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="all-stock-related-functions.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="stockTransaction">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-transaction-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="fillForm('stock-transaction-id', 'stock-transaction-table', 'stock-transaction', 'stock-transaction-form')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('stock-transaction-table','stock-transaction-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="stock-transaction-sort-options">
+              <option>--- Select an Attribute to Sort By ---</option>
+              <option value="">Transaction ID</option>
+              <option value="">Stock ID</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Transaction Date</option>
+            </select>
+            <button id="stock-transaction-sort-btn" type="button" onclick="sortTableByColumn('-table', 'stock-transaction-sort-options', this, 'YES')">🡹</button>
+          </div>
+        </div>
+
+        <br>
+        <br>  
+
+        <h1>STOCK TRANSACTION TABLE</h1>
+
+        <div class="table-container">
+          <table id="stock-transaction-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>STOCK ID</th>
+                <th>[ID] INGREDIENT</th>
+                <th>QTY CHANGES</th>
+                <th>TXN TYPE</th>
+              </tr>
+            </thead>
+            <tbody id="stock-transaction-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STOCK TXN FORM<br>(VIEW ONLY)</h2>
+        
+        <div class="details-display-container">
+
+          <form id="stock-transaction-form">
+  
+            <label for="stock-transaction-id">Stock Transaction ID:</label>
+            <input type="number" id="stock-transaction-id" name="stock-transaction-id" min="1" disabled>
+            
+            <br>
+  
+            <label for="stock-transaction-stock-id">Stock ID:</label>
+            <input type="number" id="stock-transaction-stock-id" name="stock-transaction-stock-id" disabled>
+            
+            <br>
+  
+            <label for="stock-transaction-ingredient-id">[ID] Ingredient (Unit):</label>
+            <input type="text" id="stock-transaction-ingredient-id" name="stock-transaction-ingredient-id" disabled>
+            
+            <br>
+  
+            <label for="stock-ingredient-qty-added">Quantity Added:</label>
+            <input type="number" id="stock-ingredient-qty-added" name="stock-ingredient-qty-added" disabled>
+  
+            <br>
+  
+            <label for="stock-ingredient-qty-removed">Quantity Removed:</label>
+            <input type="number" id="stock-ingredient-qty-removed" name="stock-ingredient-qty-removed" disabled>
+  
+            <br>
+            
+            <label for="stock-ingredient-transaction-type">Transaction Type:</label>
+            <select id="stock-transaction-transaction-type">
+              <option>--- Click to View Different Status ---</option>
+              <option value="STOCK IN">STOCK IN</option>  
+              <option value="STOCK OUT">STOCK OUT</option>
+              <option value="STOCK ADJUSTMENT">STOCK ADJUSTMENT</option>
+              <option value="ORDER CANCELLED">ORDER CANCELLED</option>
+            </select>
+
+            <br>
+  
+            <label for="stock-ingredient-transaction-date">Transaction Date:</label>
+            <input type="date" id="stock-ingredient-transaction-date" name="stock-ingredient-transaction-date" disabled>
+  
+            <br>
+    
+            <label for="stock-ingredient-remarks">Remarks:</label>
+            <textarea id="stock-ingredient-remarks" name="stock-ingredient-remarks" rows="8" disabled></textarea>
+  
+            <br>
+  
+            <label for="stock-transaction-staff-id">Staff ID and Full Name:</label>
+            <input type="number" id="stock-transaction-staff-id" name="stock-transaction-staff-id" placeholder="For the Staff that cancelled the Order" disabled>
+            
+            <br>
+  
+            <label for="stock-transaction-order-id">Order ID:</label>
+            <input type="number" id="stock-transaction-order-id" name="stock-transaction-order-id" placeholder="For 'ORDER CANCELLED'" disabled>
+            
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="all-stock-related-functions.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="staff">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="staff-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'staff-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('staff-table','staff-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="staff-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Staff ID</option>
+              <option value="">First Name</option>
+              <option value="">Middle Name</option>
+              <option value="">Last Name</option>
+            </select>
+            <button id="staff-sort-btn" type="button" onclick="sortTableByColumn('staff-table', 'staff-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewStaff()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedStaff()">Update</button>
+            <!-- <button class="deleteButtons" type="button" onclick="deleteSelectedStaff()">Delete</button> -->
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>STAFF TABLE</h1>
+
+        <div class="table-container">
+          <table id="staff-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>FULL NAME</th>
+                <th>CONTACT INFO</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="staff-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>STAFF FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="staff-form">
+            
+            <label for="staff-status">Staff ID and Status:</label>
+            <div class="input-group"> 
+              <input type="number" id="staff-id" name="staff-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('staff-id', 'staff-table', 'staff', 'staff-form')">
+              <select id="staff-status" name="staff-status" required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="RETIRED">RETIRED</option>
+                <option value="VOIDED">VOIDED</option>
+              </select>
+            </div>
+  
+            <br>
+  
+            <label for="staff-first-name">First Name:</label>
+            <input type="text" id="staff-first-name" name="staff-first-name" placeholder="Enter the Staff's First Name" required>
+  
+            <br>
+    
+            <label for="staff-middle-name">Middle Name:</label>
+            <input type="text" id="staff-middle-name" name="staff-middle-name" placeholder="Enter the Staff's Middle Name (Optional)">
+  
+            <br>
+    
+            <label for="staff-last-name">Last Name:</label>
+            <input type="text" id="staff-last-name" name="staff-last-name" placeholder="Enter the Staff's Last Name" required>
+  
+            <br>
+    
+            <label for="staff-designation">Designation:</label>
+            <input type="text" id="staff-designation" name="staff-designation" placeholder="Enter the Staff's Designation" required>
+  
+            <br>
+    
+            <label for="staff-phonenumber">Contact Number (09xxxxxxxxx):</label>
+            <input type="number" id="staff-phonenumber" name="staff-phonenumber" placeholder="Enter the Staff's Phone Number" required minlength="11" maxlength="11" pattern="\d{11}">
+  
+            <br>
+    
+            <label for="staff-address">Address:</label>
+            <textarea id="staff-address" name="staff-address" placeholder="Enter the Staff's Address" rows="8" required></textarea>
+  
+            <br>
+  
+            <label for="staff-email">Email:</label>
+            <input type="email" id="staff-email" name="staff-email" placeholder="Enter the Staff's Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+            
+            <br>
+
+            <label for="staff-email-confirm">Confirm Email:</label>
+            <input type="email" id="staff-email-confirm" name="staff-email-confirm" placeholder="Re-enter Email for Confirmation" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+  
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewStaff()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedStaff()">Update</button>
+            </div>
+
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_staff.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="customer">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="customer-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'customer-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('customer-table','customer-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="customer-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Customer ID</option>
+              <option value="">First Name</option>
+              <option value="">Middle Name</option>
+              <option value="">Last Name</option>
+            </select>
+            <button id="customer-sort-btn" type="button" onclick="sortTableByColumn('customer-table', 'customer-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewCustomer()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedCustomer()">Update</button>
+            <!-- <button class="deleteButtons" type="button" onclick="deleteSelectedCustomer()">Delete</button> -->
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>CUSTOMER TABLE</h1>
+
+        <div class="table-container">
+          <table id="customer-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>FULL NAME</th>
+                <th>CONTACT INFO</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="customer-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>CUSTOMER FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="customer-form">
+  
+            <label for="customer-status">Customer ID and Status:</label>
+            <div class="input-group"> 
+              <input type="number" id="customer-id" name="customer-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('customer-id', 'customer-table', 'customer', 'customer-form')"> 
+              <select id="customer-status" name="customer-status" required>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+                <option value="BANNED">BANNED</option>
+                <option value="LOST">LOST</option>
+                <option value="VIP">VIP</option>
+                <option value="GUEST">GUEST</option>
+              </select>
+            </div>
+  
+            <br>
+  
+            <label for="customer-first-name">First Name:</label>
+            <input type="text" id="customer-first-name" name="customer-first-name" placeholder="Enter the Customer's First Name" required>
+  
+            <br>
+    
+            <label for="customer-middle-name">Middle Name:</label>
+            <input type="text" id="customer-middle-name" name="customer-middle-name" placeholder="Enter the Customer's Middle Name (Optional)">
+  
+            <br>
+    
+            <label for="customer-last-name">Last Name:</label>
+            <input type="text" id="customer-last-name" name="customer-last-name" placeholder="Enter Customer's Last Name" required>
+  
+            <br>
+  
+            <label for="customer-gender">Gender:</label>
+            <select id="customer-gender" name="customer-gender" required>
+              <option value="" disabled selected>--- Select the Gender of this Customer ---</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+  
+            <br>
+  
+            <label for="customer-birthdate">Birth Date:</label>
+            <input type="date" id="customer-birthdate" name="customer-birthdate" placeholder="Enter the Customer's Birthdate" required max="">
+  
+            <br>
+    
+            <label for="customer-phonenumber">Contact Number (09xxxxxxxxx):</label>
+            <input type="text" id="customer-phonenumber" name="customer-phonenumber" placeholder="Enter the Customer's Phone Number" required minlength="11" maxlength="11" pattern="\d{11}">
+  
+            <br>
+    
+            <label for="customer-address">Address:</label>
+            <textarea id="customer-address" name="customer-address" placeholder="Enter the Customer's Address" rows="8" required></textarea>
+  
+            <br>
+  
+            <label for="customer-email">Email:</label>
+            <input type="email" id="customer-email" name="customer-email" placeholder="Enter the Customer's Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+            
+            <br>
+
+            <label for="customer-email-confirm">Confirm Email:</label>
+            <input type="email" id="customer-email-confirm" name="customer-email-confirm" placeholder="Re-enter Customer's Email for Confirmation" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address." autocomplete="off" maxlength="254">
+  
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewCustomer()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedCustomer()">Update</button>
+            </div>
+            
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_customer.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="menuItem">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menu-item-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+              <option value=""></option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'menu-item-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-item-table','menu-item-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menu-item-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Menu Item ID</option>
+              <option value="">Menu Item Name</option>
+              <option value="">Menu Item Price</option>
+            </select>
+            <button id="menu-item-sort-btn" type="button" onclick="sortTableByColumn('menu-item-table', 'menu-item-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuItem('menu-item-table','menu-item')">Delete</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>MENU ITEM TABLE</h1>
+
+        <div class="table-container">
+          <table id="menu-item-table">
+            <thead>
+              <tr>
+                <th>IMAGE</th>
+                <th>[ID] MENU ITEM</th>
+                <th>MENU CATEGORY</th>
+                <th>PRICE</th>
+                <th>COST</th>
+              </tr>
+            </thead>
+            <tbody id="menu-item-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>MENU ITEM FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="menu-item-form">
+
+            <div id="imgBox_Display">
+              <img src="../img_placeholder.png" id="preview-image" alt="Menu Item Preview">
+            </div>
+  
+            <br>
+            <br>
+  
+            <label for="menu-item-img">Menu Item Image:</label>
+            <input type="file" id="menu-item-img" name="menu-item-img" accept="image/*" onchange="previewImage(event)" required>
+  
+            <br>
+  
+            <label for="menu-item-name">Menu Item Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="menu-item-id" name="menu-item-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('menu-item-id', 'menu-item-table', 'menu-item', 'menu-item-form')">
+              <input type="text" id="menu-item-name" name="menu-item-name" placeholder="Enter the Menu Item's Name" required>
+            </div>
+            
+            <br>
+  
+            <label for="menu-category-combobox">Menu Item Category:</label>
+            <select id="menu-category-combobox" name="menu-category-combobox" required>
+              <option value="" disabled selected>--- Select a Menu Category for this Menu Item ---</option>
+            </select>
+  
+            <br>
+  
+            <label for="menu-item-price">Menu Item Price (Php):</label>
+            <input type="number" id="menu-item-price" name="menu-item-price" placeholder="Enter the Menu Item's Price" required min="1">
+            
+            <br>
+  
+            <label for="menu-item-cost">Menu Item Production Cost (Php):</label>
+            <input type="number" id="menu-item-cost" name="menu-item-cost" placeholder="Enter the Menu Item's Cost Production" min="1">
+            
+            <br>
+    
+            <label for="menu-item-description">Menu Item Description:</label>
+            <textarea id="menu-item-description" name="menu-item-description" placeholder="Enter the Menu Item's Description" rows="8"></textarea>
+  
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+            <br>
+  
+            <div id="ingredient-list-table-label">
+              <h2>RECIPE INGREDIENTS</h2>
+            </div>
+  
+            <div class="table-container" id="ingredient-list-table-container">  
+              <table id="ingredient-list-table">
+                <thead>
+                  <tr>
+                    <th>KEY<br>ING.</th>
+                    <th>QTY USED<br>( ING. UNIT )</th>
+                    <th>[ID] INGREDIENT</th>
+                  </tr>
+                </thead>
+                <tbody id="ingredient-list-table-body">
+                </tbody>
+              </table>
+            </div>
+  
+            <label for="ingredient-name-combobox">Ingredient to Add:</label>
+            <select id="ingredient-name-combobox" name="ingredient-name-combobox" required>
+              <option value="" disabled selected>--- Select an Ingredient to Add ---</option>
+            </select>
+            
+            <br>
+  
+            <button type="button" onclick="addIngredientToList()">Add to the Recipe Ingredients</button>
+
+            <br>  
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewMenuItem()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedMenuItem()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedMenuItem('menu-item-table','menu-item')">Delete</button>
+            </div>
+
+            <br>
+            
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_menu-item.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="menuCategory">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menu-category-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'menu-category-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('menu-category-table','menu-category-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="menu-category-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Menu Category ID</option>
+              <option value="">Menu Category</option>
+            </select>
+            <button id="menu-category-sort-btn" type="button" onclick="sortTableByColumn('menu-category-table', 'menu-category-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory('menu-category-table','menu-category')">Delete</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>MENU CATEGORY TABLE</h1>
+
+        <div class="table-container">
+          <table id="menu-category-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>MENU CATEGORY</th>
+              </tr>
+            </thead>
+            <tbody id="menu-category-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>MENU CATEGORY FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form action="handlers/menu_category_handler.php" method="POST"  id="menu-category-form">
+
+            <label for="menu-category-name">Menu Category Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="menu-category-id" name="menu-category-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('menu-category-id', 'menu-category-table', 'menu-category', 'menu-category-form')">
+              <input type="text" id="menu-category-name" name="menu-category-name" placeholder="Enter the Menu Category's Name" required>
+            </div>
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+            
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewMenuCategory()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedMenuCategory()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedMenuCategory('menu-category-table','menu-category')">Delete</button>
+            </div>
+
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_menu-category.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredient">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-stock-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-table','ingredient-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient ID</option>
+              <option value="">Ingredient Name</option>
+              <option value="">Total Quantity</option>
+            </select>
+            <button id="ingredient-sort-btn" type="button" onclick="sortTableByColumn('ingredient-table', 'ingredient-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient('ingredient-table','ingredient')">Delete</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>INGREDIENT TABLE</h1>
+
+        <div class="table-container">
+          <table id="ingredient-table">
+            <thead>
+              <tr>
+                <th><button class="updateButtons" type="button" onclick="addSelectedIngredientsToStockInTable('ingredient-table_body',true)">Stock In</button></th>
+                <th>[ID] INGREDIENT</th>
+                <th>ING. CATEGORY</th>
+                <th>TOTAL QUANTITY</th>
+              </tr>
+            </thead>
+            <tbody id="ingredient-table_body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-form">
+  
+            <label for="ingredient-name">Ingredient Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-id" name="ingredient-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-id', 'ingredient-table', 'ingredient', 'ingredient-form')">
+              <input type="text" id="ingredient-name" name="ingredient-name" placeholder="Enter the Ingredient's Name" required>       
+            </div> 
+            
+            <br>
+  
+            <label for="ingredient-category-combobox">Ingredient Category:</label>
+            <select id="ingredient-category-combobox" name="ingredient-category-combobox" required>
+              <option value="" disabled selected>--- Select a Ing. Category for this Ingredient ---</option>
+            </select>
+            
+            <br>
+  
+            <label for="ingredient-unit-combobox">Ingredient Unit:</label>
+            <select id="ingredient-unit-combobox" name="ingredient-unit-combobox" required>
+              <option value="" disabled selected>--- Select a Ing. Unit for this Ingredient ---</option>
+            </select>
+  
+            <br>
+  
+            <label for="ingredient-low-stock-threshold">Low Stock Threshold:</label>
+            <input type="number" id="ingredient-low-stock-threshold" name="ingredient-low-stock-threshold" placeholder="Enter a Number" required min="1">
+  
+            <br>
+  
+            <label for="ingredient-medium-stock-threshold">Medium Stock Threshold:</label>
+            <input type="number" id="ingredient-medium-stock-threshold" name="ingredient-medium-stock-threshold" placeholder="Enter a Number" required min="1">
+  
+            <br>
+  
+            <label for="ingredient-reorder-point">Reorder Point:</label>
+            <input type="number" id="ingredient-reorder-point" name="ingredient-reorder-point" placeholder="Enter a Number" required min="1">
+  
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredient()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredient()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredient('ingredient-table','ingredient')">Delete</button>
+            </div>
+
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_ingredient.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredientCategory">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-category-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-category-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-category-table','ingredient-category-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-category-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient Category ID</option>
+              <option value="">Ingredient Category</option>
+            </select>
+            <button id="ingredient-category-sort-btn" type="button" onclick="sortTableByColumn('ingredient-category-table', 'ingredient-category-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory('ingredient-category-table','ingredient-category')">Delete</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>INGREDIENT CATEGORY TABLE</h1>
+
+        <div class="table-container">
+          <table id="ingredient-category-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>INGREDIENT CATEGORY</th>
+              </tr>
+            </thead>
+            <tbody id="ingredient-category-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT CATEGORY<br>FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form id="ingredient-category-form">
+  
+            <label for="ingredient-category-name">Ingredient Category Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-category-id" name="ingredient-category-id" placeholder="ID" min="1" tabindex="-1" disabled  oninput="fillForm('ingredient-category-id', 'ingredient-category-table', 'ingredient-category', 'ingredient-category-form')">
+              <input type="text" id="ingredient-category-name" name="ingredient-category-name" placeholder="Enter the Ingredient Category's Name" required>              
+            </div> 
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredientCategory()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredientCategory()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientCategory('ingredient-category-table','ingredient-category')">Delete</button>
+            </div>
+
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_ingredient-category.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+    
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <div class="container" id="ingredientUnit">
+
+      <!-- ============================================================ -->
+
+      <div class="container-left-side">
+
+        <!-- ============================== -->
+
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-unit-attribute-input">
+              <option value="" disabled selected>--- Select an Attribute to Filter ---</option>
+            </select>
+            <button type="button" onclick="">Reset</button>
+          </div>
+          <div class="right-section">
+            <button class="formFeaturesButtons" type="button" onclick="toggleInputField(this, 'ingredient-unit-id')">Fill Form with ID</button>
+            <button class="formFeaturesButtons" type="button" onclick="clearFormFields('ingredient-unit-table','ingredient-unit-form','YES')">Clear Form</button>
+          </div>
+        </div>
+        
+        <div class="tool-bar">
+          <div class="left-section">
+            <select id="ingredient-unit-sort-options">
+              <option value="" disabled selected>--- Select an Attribute to Sort By ---</option>
+              <option value="">Ingredient Unit ID</option>
+              <option value="">Ingredient Unit</option>
+            </select>
+            <button id="ingredient-unit-sort-btn" type="button" onclick="sortTableByColumn('ingredient-unit-table', 'ingredient-unit-sort-options', this, 'YES')">🡹</button>
+          </div>
+          <div class="right-section">
+            <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
+            <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
+            <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
+          </div>
+        </div>
+
+        <br>
+        <br>
+
+        <h1>INGREDIENT UNIT TABLE</h1>
+
+        <div class="table-container">
+          <table id="ingredient-unit-table">
+            <thead>
+              <tr>
+                <th class="id-columns">ID</th>
+                <th>INGREDIENT UNIT</th>
+              </tr> 
+            </thead>
+            <tbody id="ingredient-unit-table-body">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+      <div class="container-right-side">
+
+        <!-- ============================== -->
+        
+        <h2>INGREDIENT UNIT FORM</h2>
+        
+        <div class="details-display-container">
+
+          <form action="handlers/ingredient_unit_handler.php"  method="POST"  id="ingredient-unit-form">
+   
+            <label for="ingredient-unit-name">Ingredient Unit Name:</label>
+            <div class="input-group"> 
+              <input type="number" id="ingredient-unit-id" name="ingredient-unit-id" placeholder="ID" min="1" tabindex="-1" disabled oninput="fillForm('ingredient-unit-id', 'ingredient-unit-table', 'ingredient-unit', 'ingredient-unit-form')">
+              <input type="text" id="ingredient-unit-name" name="ingredient-unit-name" placeholder="Enter the Ingredient Unit's Name" required>
+            </div> 
+            
+            <br>
+            <br>  
+            <span>====================================</span>
+            <br>
+
+            <div class="form-buttons-container">
+              <button class="addButtons" type="button" onclick="addNewIngredientUnit()">Add</button>
+              <button class="updateButtons" type="button" onclick="updateSelectedIngredientUnit()">Update</button>
+              <button class="deleteButtons" type="button" onclick="deleteSelectedIngredientUnit('ingredient-unit-table','ingredient-unit')">Delete</button>
+            </div>
+            
+            <br>
+
+          </form>
+
+        </div>
+
+        <!-- ============================== -->
+        
+      </div>
+
+      <!-- ============================================================ -->
+
+    </div>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="form_ingredient-unit.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+
+
+
+
+
+
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+
+    <script src="RMS-helper-functions.js"></script>
+      
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    
+  </body>
+
+</html>
